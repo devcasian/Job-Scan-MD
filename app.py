@@ -55,17 +55,10 @@ def index():
         results = scrape_all_pages(keyword)
         
         df = pd.DataFrame(results)
-        
-        # Reorder columns to have Company first
         df = df[['Company', 'Title', 'Salary']]
-        
-        # Sort by Company name
         df = df.sort_values('Company')
-        
-        # Reset index starting from 1
         df.index = range(1, len(df) + 1)
-        
-        # Convert DataFrame to HTML, including index
+    
         table_html = df.to_html(classes='data', index=True, index_names=['No.'])
         
         return render_template('results.html', table=table_html)
