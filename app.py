@@ -26,7 +26,10 @@ def scrape_page(url):
         salary_tag = listing.find('span', class_='salary-negotiable')
         salary = salary_tag.text.strip() if salary_tag else 'N/A'
         
-        data.append({'Title': title, 'Company': company, 'Salary': salary})
+        url_tag = listing.find('a', href=lambda x: x and (x.startswith('/ru/locuri-de-munca/') or x.startswith('/ru/joburi/')))
+        url = 'https://www.rabota.md' + url_tag['href'] if url_tag else 'N/A'
+        
+        data.append({'Title': title, 'Company': company, 'Salary': salary, 'URL': url})
     
     return data
 
@@ -56,10 +59,13 @@ def index():
             results = scrape_all_pages(keyword)
             
             df = pd.DataFrame(results)
-            df = df[['Company', 'Title', 'Salary']]
+            df = df[['Company', 'Title', 'Salary', 'URL']]
             df = df.sort_values('Company')
             df.index = range(1, len(df) + 1)
-            table_html = df.to_html(classes='data', index=True, index_names=['No.'])
+            
+            df['URL'] = df['URL'].apply(lambda x: f'<a href="{x}" target="_blank">View Job</a>' if x != 'N/A' else 'N/A')
+            
+            table_html = df.to_html(classes='data', index=True, index_names=['No.'], escape=False)
             
             return render_template('results.html', table=table_html)
         except Exception as e:

@@ -106,3 +106,12 @@ table tbody tr:hover {
     font-weight: bold;
     color: #3498db;
 }
+
+table a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
