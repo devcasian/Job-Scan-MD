@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Pulse</title>
+    <title>Job Scraper</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Job Pulse</h1>
-    <form method="post">
+    <h1>Job Scraper</h1>
+    <form id="searchForm" method="post">
         <label for="keyword">Enter keyword:</label>
         <input type="text" id="keyword" name="keyword" required>
-        <input type="submit" value="Search">
+        <input type="submit" id="searchButton" value="Search">
     </form>
+    <div id="loadingIndicator" style="display: none;">
+        Searching... Please wait.
+    </div>
+
+    <script src="{{ url_for('static', filename='loading.js') }}"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request
-import requests
+from flask import Flask, render_template, request, redirect, url_for
 from bs4 import BeautifulSoup
+import requests
 import pandas as pd
 
 app = Flask(__name__)
@@ -52,16 +52,19 @@ def scrape_all_pages(keyword):
 def index():
     if request.method == 'POST':
         keyword = request.form['keyword']
-        results = scrape_all_pages(keyword)
-        
-        df = pd.DataFrame(results)
-        df = df[['Company', 'Title', 'Salary']]
-        df = df.sort_values('Company')
-        df.index = range(1, len(df) + 1)
-    
-        table_html = df.to_html(classes='data', index=True, index_names=['No.'])
-        
-        return render_template('results.html', table=table_html)
+        try:
+            results = scrape_all_pages(keyword)
+            
+            df = pd.DataFrame(results)
+            df = df[['Company', 'Title', 'Salary']]
+            df = df.sort_values('Company')
+            df.index = range(1, len(df) + 1)
+            table_html = df.to_html(classes='data', index=True, index_names=['No.'])
+            
+            return render_template('results.html', table=table_html)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return redirect(url_for('index'))
     return render_template('index.html')
 
 if __name__ == '__main__':
